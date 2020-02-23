@@ -67,7 +67,7 @@ Procederemos a la creación de un cliente para la integración con una aplicaci�
 
 Desde la consola de administración de Keycloak seleccionamos el menú "Clients" y después damos click en el botón "Create". Escribimos **spring-cloud-gateway-client** para el campo "Client ID", dejamos seleccionada la opción de openid-connect y guardamos.
 
-En la pantalla de "Settings" de este nuevo cliente cambiamos el valor de "Access Type" a "confidential" y agregamos el valor **http://localhost:9090/* ** al campo "Valid Redirect URIs". Esta es la URL donde iniciará nuestra aplicación .
+En la pantalla de "Settings" de este nuevo cliente cambiamos el valor de "Access Type" a "confidential" y agregamos el valor **http://localhost:9090/\*** al campo "Valid Redirect URIs". Esta es la URL donde iniciará nuestra aplicación .
 
 Pasamos a la pestaña de "Credentials" y generamos un nuevo secreto, damos click al botón "Regenerate Secret". Guardamos el valor del secreto pues lo usaremos posteriormente. En este casos el valor generado fue: **81a0dfd8-49b7-4c4b-8a8d-92f1ed9636b1**
 
@@ -90,6 +90,71 @@ spring:
         registration:
           keycloak:
             client-id: spring-cloud-gateway-client
-            client-secret: 2ddec23f-0002-4425-9fcc-7489b1648a9e
+            client-secret: 81a0dfd8-49b7-4c4b-8a8d-92f1ed9636b1
 
 ````
+
+En este mismo archivo agregamos la configuración para Spring Cloud Gateway:
+
+```
+  cloud:
+    gateway:
+      default-filters:
+      - TokenRelay
+
+      routes:
+      - id: httpbin
+        uri: https://httpbin.org
+        predicates:
+        - Path=/httpbin/**
+        filters:
+        - StripPrefix=1
+
+      - id: flights-service
+        uri: http://de8605e4.ngrok.io/flights
+        predicates:
+        - Path=/flights/**
+
+      - id: hotels-service
+        uri: http://d4fa6a7b.ngrok.io/hotels
+        predicates:
+        - Path=/hotels/**
+```
+
+Hay varias cosas importantes aquí. La primera es el filtro TokenRelay que será usado para pasar el token de autenticación a los 2 servicios que lo requerirán, el de "flights" y el de "hotels". Para cada uno de ellos se especifica un path para la redirección de las llamadas HTTP.
+
+El archivo application.xml de "flights-service" queda de esta forma:
+
+```
+server:
+  port: 8081
+  servlet:
+    context-path: /flights/
+spring:
+  application:
+    name: flights-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/auth/realms/jvmmx
+``` 
+
+y el de "hotels-service":
+
+```
+server:
+  port: 8082
+  servlet:
+    context-path: /hotels/
+spring:
+  application:
+    name: hotels-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/auth/realms/jvmmx
+```
+
+En ambos casos se indica que para el acceso a estos servicios se requerirá de un token JWT que debió ser emitido y firmado por el realm correspondiente.
