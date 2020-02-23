@@ -60,3 +60,36 @@ Una vez que el usuario es creado seleccionamos la pestaña "Credentials" para as
 Para confirmar los datos de acceso nos dirijimos a http://localhost:8080/auth/realms/jvmmx/account e ingresamos con demo/hola123.
 
 Se nos pedirá que cambiemos la contraseña pues la que asignamos previamente era temporal. Entonces estaremos en la página de la cuenta del usuario desde donde se pueden actualizar datos personales. En esta parte podemos simplemente cerrar la sesión.
+
+## Creación de un cliente
+
+Procederemos a la creación de un cliente para la integración con una aplicación SpringBoot.
+
+Desde la consola de administración de Keycloak seleccionamos el menú "Clients" y después damos click en el botón "Create". Escribimos **spring-cloud-gateway-client** para el campo "Client ID", dejamos seleccionada la opción de openid-connect y guardamos.
+
+En la pantalla de "Settings" de este nuevo cliente cambiamos el valor de "Access Type" a "confidential" y agregamos el valor **http://localhost:9090/* ** al campo "Valid Redirect URIs". Esta es la URL donde iniciará nuestra aplicación .
+
+Pasamos a la pestaña de "Credentials" y generamos un nuevo secreto, damos click al botón "Regenerate Secret". Guardamos el valor del secreto pues lo usaremos posteriormente. En este casos el valor generado fue: **81a0dfd8-49b7-4c4b-8a8d-92f1ed9636b1**
+
+El archivo application.xml de la aplicación SpringBoot queda entonces con esta configuración:
+
+```
+server:
+  port: 9090
+
+spring:
+  application:
+    name: travel-spring-cloud-gateway
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/auth/realms/jvmmx
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: spring-cloud-gateway-client
+            client-secret: 2ddec23f-0002-4425-9fcc-7489b1648a9e
+
+````
