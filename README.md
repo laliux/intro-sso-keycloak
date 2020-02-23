@@ -6,11 +6,10 @@ Keycloak es una solución de inicio de sesión único para aplicaciones web y se
 
 El objetivo de Keycloak es simplificar a los desarrolladores la implementación de la seguridad de las aplicaciones al proveer de forma inmediata las características que normalmente se tienen que escribir por sí mismas. Con Keycloak se pueden asegurar aplicaciones escribiendo muy poco código.
 
-Keycloak proporciona interfaces de usuario personalizables para inicio de sesión y registro,y también se puede delegar la autenticación a proveedores de identidad de terceros como Facebook y Twitter.
-
 ## Principales características
 
 * Servidor de autenticación con soporte para Single Sign One / SSO.
+* Keycloak proporciona interfaces de usuario personalizables para inicio de sesión y registro,y también se puede delegar la autenticación a proveedores de identidad de terceros como Facebook y Twitter.
 * Keycloak está basado en protocolos estándar y provee soporte para OpenID Connect, OAuth 2.0, y SAML.
 
 ## Requerimientos de sistema
@@ -42,22 +41,22 @@ $ ./bin/standalone.sh
 
 ## Creación de la cuenta Admin
 
-Después de que inicia el servidor Keycloak hay que abrir la url http://localhost:8080/auth en el navegador e ingresar un nombre de usuario y contraseña para crear el usuario admin incial.
+Después de que inicia el servidor abrimos la url http://localhost:8080/auth en el navegador e ingresamos un nombre de usuario y contraseña para crear el usuario admin incial.
 
-Con estas credenciales se puede ingresar a la consola de administración de Keycloak.
+Con estas credenciales ingresaremos a la consola de administración de Keycloak.
 
 ## Creación de un Realm y un usuario
 
 Un realm administra un conjunto de usuarios, credenciales, roles y grupos. Un usuario pertenece a un realm y un realm sólo puede autenticar y administrar a los usuarios que éste mismo controla.
 
-Para crear un realm hay que iniciar sesión con el usuario admin creado previamente,  http://localhost:8080/auth/admin/ .
+Para crear un realm iniciamos sesión con el usuario admin creado previamente,  http://localhost:8080/auth/admin/ .
 
-Desde el menú desplegable en el lado superior izquierdo hay que seleccionar "Add Realm". El realm de ejemplo se llamará **jvmmx**.
+Desde el menú desplegable en el lado superior izquierdo seleccionamos "Add Realm". El realm de ejemplo se llamará **jvmmx**.
 
-Para crear un usuario se usa el menú "Users" del lado inzquierdo de la consola de administración, después damos click al botón "Add User". El único valor requerido es el username. Ponemos **demo**, cambiamos el campo "Email Verified" a "ON" y guardamos.
+Para crear un usuario usamos el menú "Users" del lado inzquierdo de la consola de administración, después damos click al botón "Add User". El único valor requerido es el username. Ponemos **demo**, cambiamos el campo "Email Verified" a "ON" y guardamos.
 
 Una vez que el usuario es creado seleccionamos la pestaña "Credentials" para asignar una contraseña temporal. Ponemos **hola123** y guardamos.
 
 Para confirmar los datos de acceso nos dirijimos a http://localhost:8080/auth/realms/jvmmx/account e ingresamos con demo/hola123.
 
-Se nos pedirá que cambiemos la contraseña pues la que asignamos previamente era temporal. Entonces estaremos en la página de la cuenta del usuario desde donde se pueden actualizar datos personales. Cerramos la sesión.
+Se nos pedirá que cambiemos la contraseña pues la que asignamos previamente era temporal. Entonces estaremos en la página de la cuenta del usuario desde donde se pueden actualizar datos personales. En esta parte podemos simplemente cerrar la sesión.
