@@ -1,3 +1,5 @@
+> Esta es una mala traducción del artículo titulado "Spring Cloud Gateway with OpenID Connect and Token Relay" https://blog.jdriven.com/2019/11/spring-cloud-gateway-with-openid-connect-and-token-relay/ , si te sientes cómodo con el inglés dicho artículo es una mejor referencia. 
+
 Spring Cloud Gateway provee una forma simple de redirigir peticiones a diversas APIs tomando en cuenta aspectos de seguridad, monitoreo y resilencia.
 
 Al combinarse con Spring Security 5.2+ y un proveedor OpenID tal como Keycloak, uno puede tener rápidamente una configuración  de un gateway seguro para el acceso servicios protegidos mediante OAuth2.
@@ -8,7 +10,7 @@ El ejemplo modela un sitio web de viajes implementado como un gateway conectado 
 
 === Keycloak
 
-En este punto ya debemos tener configurado y listo nuestro servidor Keycloak.
+En este punto ya debemos tener listo y configurado nuestro servidor Keycloak. El README principal de este repositorio tiene la explicación correspondiente https://github.com/laliux/intro-sso-keycloak
 
 === Gateway
 
@@ -19,8 +21,8 @@ El gateway es mínimo en cuanto a dependencias, código y configuración.
 2. La funcionalidad del gateway es proporcionada por `org.springframework.cloud:spring-cloud-starter-gateway`
 3. El reenvío de los tokens a los servicios protegidos lo proporciona `org.springframework.cloud:spring-cloud-security`
 
-==== Code
-Además de la anotación `@SpringBootApplication` básicamente lo que necesitamos es esto:
+==== Código
+Además de la típica anotación `@SpringBootApplication` , básicamente lo que necesitamos es esto:
 [source,java]
 ----
 @Bean
@@ -33,18 +35,18 @@ public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http,
   // Se hace el logout con el proveedor OpenID
   http.logout(logout -> logout.logoutSuccessHandler(new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository)));
   
-  // Requier autenticación para todas las peticiones
+  // Requiere autenticación para todas las peticiones
   http.authorizeExchange().anyExchange().authenticated();
   
-  // Allow showing /home within a frame
+  // Permite que se muestre /home en un frame html
   http.headers().frameOptions().mode(Mode.SAMEORIGIN);
   
-  // Disable CSRF in the gateway to prevent conflicts with proxied service CSRF
+  // Deshabilita CSRF en el gateway para prevenir conflictos con los servicios del proxy
   http.csrf().disable();
   return http.build();
 }
 ----
-==== Configuration
+==== Configuración
 Esta es la parte que integra Spring Security con Keycloak.
 [source,yaml]
 ----
@@ -66,7 +68,7 @@ spring:
             client-id: spring-cloud-gateway-client
             client-secret: 81a0dfd8-49b7-4c4b-8a8d-92f1ed9636b1
 ----
-Esta otra es la que define las rutas y los servicios-
+Esta otra es la que define las rutas y los servicios
 [source,yaml]
 ----
   cloud:
@@ -86,7 +88,7 @@ Esta otra es la que define las rutas y los servicios-
         - Path=/hotels/**
 ----
 
-`TokenRelay` activa el `TokenRelayGatewayFilterFactory`, el cual agrega `Bearer` token a las peticiones recibidas por el gateway.
+`TokenRelay` activa el `TokenRelayGatewayFilterFactory`, el cual agrega el `Bearer` token a las peticiones recibidas por el gateway.
 
 === Servicios
 Los servicios ofrecidos sólo difieren por el nombre, "flights" y "hotels", realmente tienen muy poco código implementado, la idea básicamente es tener un par de servicios que demuestren la integración con Spring Cloud Gateway.
@@ -112,7 +114,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // Validación de los tokens a través del proveedor OpenID
     http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
     
-    // Se requiere autencicación para todas las peticiones
+    // Se requiere autenticación para todas las peticiones
     http.authorizeRequests().anyRequest().authenticated();
     
     // Permite mostrar páginas en un frame html
@@ -123,8 +125,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ----
 
-También se extraen algunos datos que vienen en el token generado por Keycloak
-Este paso es opcional y puede variar según el proveedor de OpenID y cómo se haga el mapeo de roles
+También se extraen algunos datos que vienen en el token generado por Keycloak. Este paso es opcional y puede variar según el proveedor de OpenID y cómo se haga el mapeo de roles.
 [source,java]
 ----
 private JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -182,7 +183,7 @@ class UsernameSubClaimAdapter implements Converter<Map<String, Object>, Map<Stri
 ==== Configuración
 La parte de configuración de los servicios es muy parecida.
 
-Los servicios se inician en puertos diferentes y el correspondiente context-path que se haya configurado en el gateway.
+Los servicios se inician en puertos diferentes y el "context-path" correspondiente que se haya configurado en el gateway.
 
 Es importante apuntar `issuer-uri` a la misma URL del realm de Keycloak para asegurar que los tokens son decodificados y validados apropiadamente.
 
@@ -219,14 +220,28 @@ spring:
           issuer-uri: http://localhost:8080/auth/realms/jvmmx
 ----
 
-== Conclusion
-With all this in place we have the basics of a functioning gateway.
-It redirects users to Keycloak for authentication, while hiding the JSON Web Token from the user.
-Any proxied requests to resource servers are enriched with the appropriate user `access_token`, which is verified and converted into an `JwtAuthenticationToken` for use in access decisions.
+Lo que sucede al final del día es que todas las peticiones que vayan a estos servicios serán enviadas con el `access_token` apropiado, el cual es verificado y convertido a un `JwtAuthenticationToken` para permitir el acceso a los recursos.
 
 
+=== Ejecución
 
+Servicio de vuelos
+```
+$ cd pring-cloud-gateway-oidc-tokenrelay/mock-flights-service
+$ mvn spring-boot:run
+```
 
+Servicio de hoteles
+```
+$ cd spring-cloud-gateway-oidc-tokenrelay/mock-hotels-service
+$ mvn spring-boot:run
+```
+
+Gateway
+```
+$ cd spring-cloud-gateway-oidc-tokenrelay/travel-spring-cloud-gateway
+$ mvn spring-boot:run
+``
 
 == Referencias
 https://cloud.spring.io/spring-cloud-gateway/reference/html/[Spring Cloud Gateway] +
