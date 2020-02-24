@@ -111,12 +111,12 @@ En este mismo archivo agregamos la configuración para Spring Cloud Gateway:
         - StripPrefix=1
 
       - id: flights-service
-        uri: http://de8605e4.ngrok.io/flights
+        uri: http://localhost:8081/flights
         predicates:
         - Path=/flights/**
 
       - id: hotels-service
-        uri: http://d4fa6a7b.ngrok.io/hotels
+        uri: http://localhost:8082/hotels
         predicates:
         - Path=/hotels/**
 ```
@@ -158,3 +158,5 @@ spring:
 ```
 
 En ambos casos se indica que para el acceso a estos servicios se requerirá de un token JWT que debió ser emitido y firmado por el realm correspondiente.
+
+El código completo se encuentra en este directorio: https://github.com/laliux/intro-sso-keycloak/tree/master/spring-cloud-gateway-oidc-tokenrelay
