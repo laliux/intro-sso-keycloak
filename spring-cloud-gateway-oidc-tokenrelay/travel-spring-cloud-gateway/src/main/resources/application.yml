@@ -1,0 +1,48 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: travel-spring-cloud-gateway
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/auth/realms/jvmmx
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: spring-cloud-gateway-client
+            client-secret: 81a0dfd8-49b7-4c4b-8a8d-92f1ed9636b1
+
+  cloud:
+    gateway:
+      default-filters:
+      - TokenRelay
+
+      routes:
+      - id: httpbin
+        uri: https://httpbin.org
+        predicates:
+        - Path=/httpbin/**
+        filters:
+        - StripPrefix=1
+
+      - id: flights-service
+        uri: http://localhost:8081/flights
+        predicates:
+        - Path=/flights/**
+
+      - id: hotels-service
+        uri: http://localhost:8082/hotels
+        predicates:
+        - Path=/hotels/**
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud.gateway: DEBUG
+        http.server.reactive: DEBUG
+        web.reactive: DEBUG

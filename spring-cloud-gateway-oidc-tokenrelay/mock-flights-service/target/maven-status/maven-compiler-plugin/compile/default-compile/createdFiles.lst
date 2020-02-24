@@ -1,0 +1,4 @@
+com/jdriven/flights/FlightsApplication.class
+com/jdriven/flights/KeycloakRealmRoleConverter.class
+com/jdriven/flights/SecurityConfig.class
+com/jdriven/flights/UsernameSubClaimAdapter.class

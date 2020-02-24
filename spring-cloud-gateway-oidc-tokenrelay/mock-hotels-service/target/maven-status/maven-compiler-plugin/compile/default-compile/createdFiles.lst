@@ -1,0 +1,4 @@
+com/jdriven/hotels/KeycloakRealmRoleConverter.class
+com/jdriven/hotels/HotelsApplication.class
+com/jdriven/hotels/SecurityConfig.class
+com/jdriven/hotels/UsernameSubClaimAdapter.class
