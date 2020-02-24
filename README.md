@@ -67,7 +67,7 @@ Procederemos a la creación de un cliente para la integración con una aplicaci�
 
 Desde la consola de administración de Keycloak seleccionamos el menú "Clients" y después damos click en el botón "Create". Escribimos **spring-cloud-gateway-client** para el campo "Client ID", dejamos seleccionada la opción de openid-connect y guardamos.
 
-En la pantalla de "Settings" de este nuevo cliente cambiamos el valor de "Access Type" a "confidential" y agregamos el valor **http://localhost:9090/\*** al campo "Valid Redirect URIs". Esta es la URL donde iniciará nuestra aplicación .
+En la pantalla de "Settings" de este nuevo cliente cambiamos el valor de "Access Type" a "confidential" y agregamos el valor **http://localhost:9090/\* ** al campo "Valid Redirect URIs". Esta es la URL donde iniciará nuestra aplicación .
 
 Pasamos a la pestaña de "Credentials" y generamos un nuevo secreto, damos click al botón "Regenerate Secret". Guardamos el valor del secreto pues lo usaremos posteriormente. En este casos el valor generado fue: **81a0dfd8-49b7-4c4b-8a8d-92f1ed9636b1**
 
