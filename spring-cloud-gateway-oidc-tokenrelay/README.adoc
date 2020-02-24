@@ -241,7 +241,7 @@ Gateway
 ```
 $ cd spring-cloud-gateway-oidc-tokenrelay/travel-spring-cloud-gateway
 $ mvn spring-boot:run
-``
+```
 
 == Referencias
 https://cloud.spring.io/spring-cloud-gateway/reference/html/[Spring Cloud Gateway] +
